@@ -1,24 +1,55 @@
+from flask import Flask, request, redirect, url_for, render_template, Response
+from pymongo import MongoClient
 import cv2
 import os
+import base64
 
-# Debug: print the current working directory
-print("Current working directory:", os.getcwd())
+app = Flask(__name__)
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
-# Verify the file path
-image_path = 'D:/Project/test_cv2/images.jpg'
+# เชื่อมต่อกับ MongoDB Atlas
+client = MongoClient('your_mongodb_atlas_connection_uri')
+db = client['graduation']
+students_collection = db['students']
 
-# Debug: check if the file exists
-if not os.path.isfile(image_path):
-    print(f"Error: The file '{image_path}' does not exist.")
-else:
-    # อ่านภาพ
-    image = cv2.imread(image_path)
-
-    # ตรวจสอบว่าภาพถูกโหลดหรือไม่
-    if image is None:
-        print("Error: ไม่สามารถเปิดหรืออ่านไฟล์ภาพได้")
+def capture_frame():
+    cap = cv2.VideoCapture(0)
+    ret, frame = cap.read()
+    cap.release()
+    if ret:
+        filename = os.path.join(UPLOAD_FOLDER, 'capture.jpg')
+        cv2.imwrite(filename, frame)
+        return filename
     else:
-        # แสดงภาพ
-        cv2.imshow('Test Image', image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        return None
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/register', methods=['POST'])
+def register():
+    name = request.form['name']
+    photo_path = capture_frame()
+    if photo_path:
+        with open(photo_path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+        
+        student_data = {
+            "name": name,
+            "photo": encoded_string
+        }
+        students_collection.insert_one(student_data)
+        return redirect(url_for('data'))
+    else:
+        return "Failed to capture photo", 500
+
+@app.route('/data')
+def data():
+    students = students_collection.find()
+    return render_template('data.html', students=students)
+
+if __name__ == '__main__':
+    app.run(debug=True)

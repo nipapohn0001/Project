@@ -1,6 +1,23 @@
 import cv2
 import os
 import json
+import pymongo
+from pymongo import MongoClient
+from bson.binary import Binary
+import gridfs
+
+# เชื่อมต่อกับ MongoDB
+client = MongoClient('mongodb://localhost:27017/')
+db = client['mongodbVSCodePlaygroundDB']
+collection = db['attendees']
+fs = gridfs.GridFS(db)
+
+from pymongo import MongoClient
+
+# เพิ่มข้อมูลเข้าสู่คอลเล็กชัน
+data = {'name': 'John', 'age': 30}
+collection.insert_one(data)
+
 
 # ฟังก์ชันสำหรับการลงทะเบียนผู้เข้าร่วม
 def register_attendee(name, frame):
@@ -11,14 +28,14 @@ def register_attendee(name, frame):
         (x, y, w, h) = faces[0]
         face_image = frame[y:y+h, x:x+w]
         
-        # บันทึกรูปภาพใบหน้า
-        face_image_path = f'C:/Users/User/Documents/GitHub/Project/faces/{name}.jpg'
-        os.makedirs(os.path.dirname(face_image_path), exist_ok=True)
-        cv2.imwrite(face_image_path, face_image)
+        # แปลงรูปภาพเป็นบิตไบนารี
+        _, buffer = cv2.imencode('.jpg', face_image)
+        face_image_binary = Binary(buffer.tobytes())
         
+        # บันทึกข้อมูลผู้ใช้งานและรูปภาพใบหน้าใน MongoDB
         user_data = {
             'name': name,
-            'face_image_path': face_image_path  # บันทึกใบหน้าเป็นเส้นทางไฟล์
+            'face_image': fs.put(face_image_binary, filename=f"{name}.jpg")  # บันทึกใบหน้าใน GridFS
         }
         register_user(user_data)
         print(f"Registered {name} successfully!")
@@ -27,9 +44,7 @@ def register_attendee(name, frame):
 
 # ฟังก์ชันสำหรับการบันทึกข้อมูลผู้ใช้งาน
 def register_user(user_data):
-    with open('registered_users.json', 'a') as f:
-        json.dump(user_data, f)
-        f.write('\n')
+    collection.insert_one(user_data)
 
 # เปิดกล้องสำหรับการลงทะเบียน
 video_capture = cv2.VideoCapture(0)
@@ -54,21 +69,4 @@ cv2.destroyAllWindows()
 # Debug: แสดงไดเรกทอรีทำงานปัจจุบัน
 print("Current working directory:", os.getcwd())
 
-# ตรวจสอบเส้นทางไฟล์
-image_path = f'C:/Users/User/Documents/GitHub/Project/faces/{name}.jpg'  # ใช้ตัวแปร name อย่างถูกต้อง
 
-# Debug: ตรวจสอบว่าไฟล์มีอยู่หรือไม่
-if not os.path.isfile(image_path):
-    print(f"Error: The file '{image_path}' does not exist.")
-else:
-    # อ่านภาพ
-    image = cv2.imread(image_path)
-
-    # ตรวจสอบว่าภาพถูกโหลดหรือไม่
-    if image is None:
-        print("Error: ไม่สามารถเปิดหรืออ่านไฟล์ภาพได้")
-    else:
-        # แสดงภาพ
-        cv2.imshow('Test Image', image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
