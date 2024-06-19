@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!----======== CSS ======== -->
-    <link rel="stylesheet" href="/Amin/Sidebar_Amid.css">
+    <link rel="stylesheet" href="/Admin/Sidebar_Amid.css">
 
     <!----===== Boxicons CSS ===== -->
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
@@ -39,28 +39,28 @@
             <div class="menu">
                 <ul class="menu-links">
                     <li class="nav-link">
-                        <a href="/Amin/Home_Amin.html">
+                        <a href="/Admin/Home_Amin.html">
                             <i class='bx bx-home-alt icon'></i>
                             <span class="text nav-text">Home</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="/Amin/StudentDB_Amin.html">
+                        <a href="/Admin/StudentDB_Amin.html">
                             <i class='bx bx-food-menu icon'></i>
                             <span class="text nav-text">Registered student information</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="/Amin/Check in_Amin.html">
+                        <a href="/Admin/Check in_Amin.html">
                             <i class='bx bx-user icon'></i>
                             <span class="text nav-text">Check in scan</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="/Amin/Status_Amin.html">
+                        <a href="/Admin/Status_Amin.html">
                             <i class='bx bx-pie-chart-alt icon'></i>
                             <span class="text nav-text">Status</span>
                         </a>
@@ -108,7 +108,13 @@
     </nav>
 
     <section class="home">
-        <div class="text">STATUS</div>
+        <div class="text">REGISTERED STUDENT INFORMATION</div>
+        <div>
+            <li class="search-box">
+                <i class='bx bx-search icon'></i>
+                <input type="text" placeholder="Search...">
+            </li>
+        </div>
     </section>
 
     <!-- ========================================================== -->
@@ -117,6 +123,7 @@
         const body = document.querySelector('body'),
             sidebar = body.querySelector('nav'),
             toggle = body.querySelector(".toggle"),
+            searchBtn = body.querySelector(".search-box"),
             modeSwitch = body.querySelector(".toggle-switch"),
             modeText = body.querySelector(".mode-text");
 
