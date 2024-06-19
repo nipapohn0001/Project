@@ -8,13 +8,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!----======== CSS ======== -->
-    <link rel="stylesheet" href="/Amin/Sidebar_Amid.css">
+    <link rel="stylesheet" href="sidebar_Std.css">
 
     <!----===== Boxicons CSS ===== -->
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
 
     <!--<title>Dashboard Sidebar Menu</title>-->
 
+    <style>
+        .content {
+            padding: 20px;
+        }
+
+        .news-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .news-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .news-item {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 
 <body>
@@ -22,13 +42,13 @@
         <header>
             <div class="image-text">
                 <span class="image">
-                    <img src="/image/graduated2.png" alt="123">
+                    <img src="/Prim/image/graduated2.png" alt="123">
                 </span>
             </div>
             <div>
                 <div class="text logo-text">
                     <span class="name">Register for graduation</span>
-                    <span class="profession">AMIN</span>
+                    <span class="profession">ลงทะเบียนรับปริญญา</span>
                 </div>
             </div>
 
@@ -39,47 +59,25 @@
             <div class="menu">
                 <ul class="menu-links">
                     <li class="nav-link">
-                        <a href="/Amin/Home_Amin.html">
+                        <a href="/Prim/home.html">
                             <i class='bx bx-home-alt icon'></i>
                             <span class="text nav-text">Home</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="/Amin/StudentDB_Amin.html">
+                        <a href="/Prim/Register_Std.html">
                             <i class='bx bx-food-menu icon'></i>
-                            <span class="text nav-text">Registered student information</span>
+                            <span class="text nav-text">Register</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="/Amin/Check in_Amin.html">
+                        <a href="/Prim/Personal_Std.html">
                             <i class='bx bx-user icon'></i>
-                            <span class="text nav-text">Check in scan</span>
+                            <span class="text nav-text">Personal Information</span>
                         </a>
                     </li>
-
-                    <li class="nav-link">
-                        <a href="/Amin/Status_Amin.html">
-                            <i class='bx bx-pie-chart-alt icon'></i>
-                            <span class="text nav-text">Status</span>
-                        </a>
-                    </li>
-
-                    <!-- <li class="nav-link">
-                        <a href="#">
-                            <i class='bx bx-heart icon'></i>
-                            <span class="text nav-text">Likes</span>
-                        </a>
-                    </li> -->
-
-                    <!-- <li class="nav-link">
-                        <a href="#">
-                            <i class='bx bx-wallet icon'></i>
-                            <span class="text nav-text">Wallets</span>
-                        </a>
-                    </li> -->
-
                 </ul>
             </div>
 
@@ -102,31 +100,38 @@
                         <span class="switch"></span>
                     </div>
                 </li>
-
             </div>
         </div>
     </nav>
 
     <section class="home">
-        <div class="text">REGISTERED STUDENT INFORMATION</div>
-        <div>
-            <li class="search-box">
-                <i class='bx bx-search icon'></i>
-                <input type="text" placeholder="Search...">
-            </li>
+        <div class="text">MAE FAH LUANG UNIVERSITY</div>
+        <div class="content">
+            <div class="news-section">
+                <h2>Graduation Schedule Information</h2>
+                <div class="news-item">
+                    <h3>Event 1: Graduation Ceremony</h3>
+                    <p>Date: July 10, 2024</p>
+                    <p>Time: 10:00 AM - 2:00 PM</p>
+                    <p>Location: University Auditorium</p>
+                </div>
+                <div class="news-item">
+                    <h3>Event 2: Rehearsal</h3>
+                    <p>Date: July 8, 2024</p>
+                    <p>Time: 1:00 PM - 4:00 PM</p>
+                    <p>Location: University Auditorium</p>
+                </div>
+                <!-- Add more events as needed -->
+            </div>
         </div>
     </section>
-
-    <!-- ========================================================== -->
 
     <script>
         const body = document.querySelector('body'),
             sidebar = body.querySelector('nav'),
             toggle = body.querySelector(".toggle"),
-            searchBtn = body.querySelector(".search-box"),
             modeSwitch = body.querySelector(".toggle-switch"),
             modeText = body.querySelector(".mode-text");
-
 
         toggle.addEventListener("click", () => {
             sidebar.classList.toggle("close");
@@ -139,11 +144,9 @@
                 modeText.innerText = "Light mode";
             } else {
                 modeText.innerText = "Dark mode";
-
             }
         });
     </script>
-
 </body>
 
 </html>
