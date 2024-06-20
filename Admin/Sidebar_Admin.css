@@ -224,6 +224,15 @@ body.dark .sidebar li a:hover .text{
     justify-content: space-between;
     overflow-y: scroll;
 }
+/* -------------------------------
+.sidebar .menu-bar li.nav-text{
+    flex-direction: column;
+    display: flex;
+    position: relative;
+    text-decoration: none;
+    text-overflow: clip;
+} */
+
 .menu-bar::-webkit-scrollbar{
     display: none;
 }
