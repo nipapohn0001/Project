@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!-- Coding by CodingLab | www.codinglabweb.com -->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="Sidebar_Amind.css">
+
+    <!----===== Boxicons CSS ===== -->
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+
+    <!--<title>Dashboard Sidebar Menu</title>-->
+
+    <style>
+        .content {
+            padding: 20px;
+        }
+
+        .news-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .news-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .news-item {
+            margin-bottom: 10px;
+        }
+
+        .admin-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e1e1e1;
+            border-radius: 10px;
+        }
+
+        .admin-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .admin-item {
+            margin-bottom: 10px;
+        }
+
+        .admin-item input,
+        .admin-item textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .admin-item button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="sidebar close">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                    <img src="/Prim/image/graduated2.png" alt="123">
+                </span>
+            </div>
+            <div>
+                <div class="text logo-text">
+                    <span class="name">Register for graduation</span>
+                    <span class="profession">ลงทะเบียนรับปริญญา</span>
+                </div>
+            </div>
+
+            <i class='bx bx-chevron-right toggle'></i>
+        </header>
+
+        <div class="menu-bar">
+            <div class="menu">
+                <ul class="menu-links">
+                    <li class="nav-link">
+                        <a href="/Prim/home.html">
+                            <i class='bx bx-home-alt icon'></i>
+                            <span class="text nav-text">Home</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="/Prim/Register_Std.html">
+                            <i class='bx bx-food-menu icon'></i>
+                            <span class="text nav-text">Register</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="/Prim/Personal_Std.html">
+                            <i class='bx bx-user icon'></i>
+                            <span class="text nav-text">Personal Information</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bottom-content">
+                <li class="">
+                    <a href="#">
+                        <i class='bx bx-log-out icon'></i>
+                        <span class="text nav-text">Logout</span>
+                    </a>
+                </li>
+
+                <li class="mode">
+                    <div class="sun-moon">
+                        <i class='bx bx-moon icon moon'></i>
+                        <i class='bx bx-sun icon sun'></i>
+                    </div>
+                    <span class="mode-text text">Dark mode</span>
+
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+            </div>
+        </div>
+    </nav>
+
+    <section class="home">
+        <div class="text">MAE FAH LUANG UNIVERSITY</div>
+        <div class="content">
+            <div class="news-section">
+                <h2>Graduation Schedule Information</h2>
+                <div class="news-item">
+                    <h3 id="event1-title">Event 1: Graduation Ceremony</h3>
+                    <p id="event1-date">Date: July 10, 2024</p>
+                    <p id="event1-time">Time: 10:00 AM - 2:00 PM</p>
+                    <p id="event1-location">Location: University Auditorium</p>
+                </div>
+                <div class="news-item">
+                    <h3 id="event2-title">Event 2: Rehearsal</h3>
+                    <p id="event2-date">Date: July 8, 2024</p>
+                    <p id="event2-time">Time: 1:00 PM - 4:00 PM</p>
+                    <p id="event2-location">Location: University Auditorium</p>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h2>Edit Graduation Schedule</h2>
+                <div class="admin-item">
+                    <label for="event1-title-input">Event 1 Title</label>
+                    <input type="text" id="event1-title-input" value="Event 1: Graduation Ceremony">
+                    <label for="event1-date-input">Event 1 Date</label>
+                    <input type="text" id="event1-date-input" value="July 10, 2024">
+                    <label for="event1-time-input">Event 1 Time</label>
+                    <input type="text" id="event1-time-input" value="10:00 AM - 2:00 PM">
+                    <label for="event1-location-input">Event 1 Location</label>
+                    <input type="text" id="event1-location-input" value="University Auditorium">
+                    <button onclick="saveEvent1()">Save Event 1</button>
+                </div>
+                <div class="admin-item">
+                    <label for="event2-title-input">Event 2 Title</label>
+                    <input type="text" id="event2-title-input" value="Event 2: Rehearsal">
+                    <label for="event2-date-input">Event 2 Date</label>
+                    <input type="text" id="event2-date-input" value="July 8, 2024">
+                    <label for="event2-time-input">Event 2 Time</label>
+                    <input type="text" id="event2-time-input" value="1:00 PM - 4:00 PM">
+                    <label for="event2-location-input">Event 2 Location</label>
+                    <input type="text" id="event2-location-input" value="University Auditorium">
+                    <button onclick="saveEvent2()">Save Event 2</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const body = document.querySelector('body'),
+            sidebar = body.querySelector('nav'),
+            toggle = body.querySelector(".toggle"),
+            modeSwitch = body.querySelector(".toggle-switch"),
+            modeText = body.querySelector(".mode-text");
+
+        toggle.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+        })
+
+        modeSwitch.addEventListener("click", () => {
+            body.classList.toggle("dark");
+
+            if (body.classList.contains("dark")) {
+                modeText.innerText = "Light mode";
+            } else {
+                modeText.innerText = "Dark mode";
+            }
+        });
+
+        function saveEvent1() {
+            const title = document.getElementById('event1-title-input').value;
+            const date = document.getElementById('event1-date-input').value;
+            const time = document.getElementById('event1-time-input').value;
+            const location = document.getElementById('event1-location-input').value;
+
+            document.getElementById('event1-title').innerText = title;
+            document.getElementById('event1-date').innerText = 'Date: ' + date;
+            document.getElementById('event1-time').innerText = 'Time: ' + time;
+            document.getElementById('event1-location').innerText = 'Location: ' + location;
+        }
+
+        function saveEvent2() {
+            const title = document.getElementById('event2-title-input').value;
+            const date = document.getElementById('event2-date-input').value;
+            const time = document.getElementById('event2-time-input').value;
+            const location = document.getElementById('event2-location-input').value;
+
+            document.getElementById('event2-title').innerText = title;
+            document.getElementById('event2-date').innerText = 'Date: ' + date;
+            document.getElementById('event2-time').innerText = 'Time: ' + time;
+            document.getElementById('event2-location').innerText = 'Location: ' + location;
+        }
