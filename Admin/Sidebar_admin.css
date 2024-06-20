@@ -53,19 +53,7 @@ body.dark{
     padding: 10px 14px;
     background: var(--sidebar-color);
     transition: var(--tran-05);
-    z-index: 100;  
-    /* พลอยทำ */
-        width: 250px; /* กำหนดความกว้างของ sidebar ตามที่ต้องการ */
-        padding: 10px;
-        background-color: #f4f4f4;
-        /* ใช้หนึ่งในเทคนิคด้านบน หรือผสมผสาน */
-        word-wrap: break-word; /* หรือ overflow-wrap: break-word; */
-        /* white-space: nowrap; */
-        /* overflow: hidden; */
-        /* text-overflow: ellipsis; */
-        /* overflow: auto; */
-    
-    
+    z-index: 100;   
 }
 .sidebar.close{
     width: 88px;
@@ -413,27 +401,3 @@ body {
     cursor: pointer;
     margin: 0 5px;
 }
-<<<<<<<< HEAD:Admin/Sidebar_Admin.css
-========
-
-/* พลอยทำ */
-
-/* Ensure text in the sidebar doesn't overflow */
-.sidebar .logo-text .name {
-    max-width: 100%;  /* Set a maximum width */
-    white-space: nowrap; /* Prevents text from wrapping to a new line */
-    overflow: hidden; /* Hides overflow text */
-    text-overflow: ellipsis; /* Adds ellipsis (...) at the end of the text */
-    display: block;
-    margin-right: 15px;
-}
-
-/* Alternatively, allow text to wrap */
-.sidebar .logo-text .name {
-    max-width: 100%;  /* Set a maximum width */
-    white-space: normal; /* Allows text to wrap to a new line */
-    overflow: hidden; /* Hides overflow text */
-    display: block;
-    margin-right: 15px;
-}
->>>>>>>> 3620a08de36697aab82f9485cc881b4d3affefc0:Admin/Sidebar_admin.css
