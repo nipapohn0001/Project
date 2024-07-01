@@ -189,5 +189,5 @@ body.dark .sidebar header .toggle {
     background-color: var(--primary-color);
 }
 
-.sidebar li a:hover .icon,
-.sidebar li a:hover .text
+/* .sidebar li a:hover .icon,
+.sidebar li a:hover .text */
