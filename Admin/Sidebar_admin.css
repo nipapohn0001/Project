@@ -459,18 +459,7 @@ button:hover {
     background-color: #45a049;
 }
 
-/* Center align button */
-.home {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; /* หรือกำหนดความสูงตามที่ต้องการ */
-}
 
-.home button {
-    margin-top: 20px; /* ปรับขอบบนของปุ่มตามที่ต้องการ */
-}
 
 
 
@@ -486,3 +475,37 @@ button:hover {
         width: 150px;
     }
 }
+
+
+.home .news-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: var(--primary-color-light);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.home .news h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--text-color); /* Ensure text color consistency */
+}
+
+.home .news-item {
+    margin-bottom: auto;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 10px;
+}
+
+.home .news-item h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: var(--primary-color); /* Match with primary color for headings */
+}
+
+.home .news-item p {
+    font-size: 14px;
+    color: var(--text-color); /* Text color consistency */
+}
+
