@@ -439,3 +439,50 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
+
+/* ตกแต่งหน้าสแกน */
+/* styles.css */
+
+/* Button styles */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Center align button */
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* หรือกำหนดความสูงตามที่ต้องการ */
+}
+
+.home button {
+    margin-top: 20px; /* ปรับขอบบนของปุ่มตามที่ต้องการ */
+}
+
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar {
+        width: 150px;
+    }
+}

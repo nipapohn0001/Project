@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Coding by CodingLab | www.codinglabweb.com -->
 <html lang="en">
 
 <head>
@@ -65,21 +64,6 @@
                             <span class="text nav-text">Status</span>
                         </a>
                     </li>
-
-                    <!-- <li class="nav-link">
-                        <a href="#">
-                            <i class='bx bx-heart icon'></i>
-                            <span class="text nav-text">Likes</span>
-                        </a>
-                    </li> -->
-
-                    <!-- <li class="nav-link">
-                        <a href="#">
-                            <i class='bx bx-wallet icon'></i>
-                            <span class="text nav-text">Wallets</span>
-                        </a>
-                    </li> -->
-
                 </ul>
             </div>
 
@@ -102,7 +86,6 @@
                         <span class="switch"></span>
                     </div>
                 </li>
-
             </div>
         </div>
     </nav>
@@ -115,9 +98,10 @@
                 <input type="text" placeholder="Search...">
             </li>
         </div>
-    </section>
 
-    <!-- ========================================================== -->
+        <!-- Section to display scanned student's info -->
+        <div id="scannedInfo"></div>
+    </section>
 
     <script>
         const body = document.querySelector('body'),
@@ -127,10 +111,9 @@
             modeSwitch = body.querySelector(".toggle-switch"),
             modeText = body.querySelector(".mode-text");
 
-
         toggle.addEventListener("click", () => {
             sidebar.classList.toggle("close");
-        })
+        });
 
         modeSwitch.addEventListener("click", () => {
             body.classList.toggle("dark");
@@ -139,11 +122,19 @@
                 modeText.innerText = "Light mode";
             } else {
                 modeText.innerText = "Dark mode";
+            }
+        });
 
+        // Display student info if available
+        document.addEventListener('DOMContentLoaded', () => {
+            const studentInfo = JSON.parse(localStorage.getItem('studentInfo'));
+            if (studentInfo) {
+                const scannedInfoDiv = document.getElementById('scannedInfo');
+                scannedInfoDiv.innerHTML = `<p>Name: ${studentInfo.name}</p><p>ID: ${studentInfo.id}</p>`;
+                localStorage.removeItem('studentInfo'); // Clear after displaying
             }
         });
     </script>
-
 </body>
 
 </html>
