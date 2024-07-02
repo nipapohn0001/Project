@@ -1,21 +1,12 @@
 <!DOCTYPE html>
-<!-- Coding by CodingLab | www.codinglabweb.com -->
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!----======== CSS ======== -->
     <link rel="stylesheet" href="/Admin/Sidebar_Admin.css">
-    <!-- <link rel="stylesheet" href="/Admin/Sidebar_Admid.css"> -->
-
-    <!----===== Boxicons CSS ===== -->
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
-
-    <!--<title>Dashboard Sidebar Menu</title>-->
-
 </head>
 
 <body>
@@ -32,7 +23,6 @@
                     <span class="profession">ADMIN</span>
                 </div>
             </div>
-
             <i class='bx bx-chevron-right toggle'></i>
         </header>
 
@@ -54,7 +44,7 @@
                     </li>
 
                     <li class="nav-link">
-                        <a href="/Admin/Check in_Admin.html">
+                        <a href="javascript:void(0);" onclick="openModal()">
                             <i class='bx bx-user icon'></i>
                             <span class="text nav-text">Check in scan</span>
                         </a>
@@ -66,21 +56,6 @@
                             <span class="text nav-text">Status</span>
                         </a>
                     </li>
-
-                    <!-- <li class="nav-link">
-                        <a href="#">
-                            <i class='bx bx-heart icon'></i>
-                            <span class="text nav-text">Likes</span>
-                        </a>
-                    </li> -->
-
-                    <!-- <li class="nav-link">
-                        <a href="#">
-                            <i class='bx bx-wallet icon'></i>
-                            <span class="text nav-text">Wallets</span>
-                        </a>
-                    </li> -->
-
                 </ul>
             </div>
 
@@ -98,12 +73,10 @@
                         <i class='bx bx-sun icon sun'></i>
                     </div>
                     <span class="mode-text text">Dark mode</span>
-
                     <div class="toggle-switch">
                         <span class="switch"></span>
                     </div>
                 </li>
-
             </div>
         </div>
     </nav>
@@ -112,7 +85,16 @@
         <div class="text">CHECK IN SCAN</div>
     </section>
 
-    <!-- ========================================================== -->
+    <!-- Modal Structure -->
+    <div id="faceScanModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Select Face Scan Option</h2>
+            <video id="video" width="640" height="480" autoplay></video>
+            <button id="startButton">Start Camera</button>
+            <button id="stopButton">Stop Camera</button>
+        </div>
+    </div>
 
     <script>
         const body = document.querySelector('body'),
@@ -120,7 +102,6 @@
             toggle = body.querySelector(".toggle"),
             modeSwitch = body.querySelector(".toggle-switch"),
             modeText = body.querySelector(".mode-text");
-
 
         toggle.addEventListener("click", () => {
             sidebar.classList.toggle("close");
@@ -133,11 +114,62 @@
                 modeText.innerText = "Light mode";
             } else {
                 modeText.innerText = "Dark mode";
-
             }
         });
-    </script>
 
+        // Modal and Camera functionality
+        const modal = document.getElementById("faceScanModal");
+        const closeModalBtn = document.querySelector(".close-btn");
+        const video = document.getElementById('video');
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        let stream;
+
+        function openModal() {
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+            stopCamera();
+        }
+
+        closeModalBtn.onclick = function() {
+            closeModal();
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        startButton.addEventListener('click', () => {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(mediaStream => {
+                    stream = mediaStream;
+                    video.srcObject = mediaStream;
+                    video.play();
+                })
+                .catch(err => {
+                    console.log("An error occurred: " + err);
+                });
+        });
+
+        stopButton.addEventListener('click', stopCamera);
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+        }
+
+        function startFaceScan() {
+            alert("Face scan started!");
+            closeModal();
+        }
+    </script>
 </body>
 
 </html>
