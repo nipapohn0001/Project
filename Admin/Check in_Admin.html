@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/Admin/Sidebar_Admin.css">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script src="/js/database.js"></script>
+    <script src="/js/mongoDB.js"></script>
 </head>
 
 <body>
@@ -204,11 +206,11 @@
         }
 
         function loadLabeledImages() {
-            const labels = ['Person1', 'Person2', 'Person3']; // เพิ่มชื่อบุคคลเพิ่มเติมที่ต้องการตรวจจับ
+            const labels = ['Person1', 'Person2', 'Person3']; // Add more names as needed
             return Promise.all(
                 labels.map(async label => {
                     const descriptions = [];
-                    for (let i = 1; i <= 2; i++) { // เพิ่มจำนวนภาพที่ใช้ในการตรวจจับหากต้องการ
+                    for (let i = 1; i <= 2; i++) { // Add more images if needed
                         const img = await faceapi.fetchImage(`/images/${label}/${i}.jpg`);
                         const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
                         descriptions.push(detections.descriptor);
@@ -219,10 +221,14 @@
         }
 
         function showStudentInfo(label) {
-            // ส่งข้อมูลไปยังหน้า Registered Student Information
+            // Replace with actual MongoDB query to retrieve student information
+            // For demonstration, using mock data
             const studentInfo = {
-                name: label,
-                id: "12345" // แทนที่ด้วยรหัสจริง
+                student_id: "123456", // Replace with actual student ID from MongoDB
+                full_name: "John Doe", // Replace with actual full name from MongoDB
+                faculty: "Engineering", // Replace with actual faculty from MongoDB
+                major: "Computer Science", // Replace with actual major from MongoDB
+                image_url: "/path/to/image.jpg" // Replace with actual image URL from MongoDB
             };
             localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
             window.location.href = '/Admin/StudentDB_Admin.html';
