@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/image/mfulogo.png">
+    <title>MFU</title>
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="/Admin/css/style.css">
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <img src="/image/mfulogo.png" alt="MFU Logo" style="width: 50px; height: auto;">
+                        </span>
+                        <span class="title">Register for graduation</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Admin/html/index.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Admin/html/scan.html">
+                        <span class="icon">
+                            <ion-icon name="camera-outline"></ion-icon>
+                        </span>
+                        <span class="title">Scan</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Admin/html/studentinfo.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Student Info</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Admin/html/report.html">
+                        <span class="icon">
+                            <ion-icon name="bookmark-outline"></ion-icon>
+                        </span>
+                        <span class="title">Report</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+            </div>
+
+            <!-- =============== Scan Face ================ -->
+            <div class="cardBoxscan">
+                <div class="card" onclick="scanFace()">
+                    <div>
+                        <div class="scanface">Scan</div>
+                        <div class="cardName">click for scan</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- =========== Scripts =========  -->
+    <script src="/js/main.js"></script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- ====== face-api.js ======= -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+
+    <!-- ====== Custom Scripts ======= -->
+    <script>
+        async function scanFace() {
+            const videoElement = document.createElement('video');
+            videoElement.width = window.innerWidth; // ให้กว้างเท่ากับความกว้างของหน้าต่างเว็บ
+            videoElement.height = window.innerHeight; // ให้สูงเท่ากับความสูงของหน้าต่างเว็บ
+            videoElement.autoplay = true;
+            videoElement.style.position = 'fixed'; // ตั้งค่าให้วิดีโออยู่ในตำแหน่งที่แน่นอน
+            videoElement.style.left = '50%'; // ย้ายไปที่ตรงกลาง
+            videoElement.style.top = '50%'; // ย้ายไปที่ตรงกลาง
+            videoElement.style.transform = 'translate(-50%, -50%)'; // ปรับให้วิดีโออยู่ที่ตรงกลางแนวนอนและแนวตั้ง
+
+            // Add video element to the body
+            document.body.appendChild(videoElement);
+
+            // Start the video stream
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = stream;
+
+            // Load models
+            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+            await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+
+            // Detect faces
+            const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors();
+
+            if (detections.length > 0) {
+                // Process your logic here when a face is detected
+                alert('Face Detected!');
+                console.log(detections);
+            } else {
+                alert('No face detected.');
+            }
+
+            // Stop video stream and remove video element
+            videoElement.srcObject.getTracks().forEach(track => track.stop());
+            document.body.removeChild(videoElement);
+        }
+
+    </script>
+</body>
+
+</html>

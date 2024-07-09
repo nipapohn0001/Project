@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/image/mfulogo.png">
     <title>MFU</title>
     <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/Admin/css/style.css">
 </head>
 
 <body>
@@ -18,14 +19,14 @@
                 <li>
                     <a href="#">
                         <span class="icon">
-                            <ion-icon name="logo-apple"></ion-icon>
+                            <img src="/image/mfulogo.png" alt="MFU Logo" style="width: 50px; height: auto;">
                         </span>
-                        <span class="title">Brand Name</span>
+                        <span class="title">Register for graduation</span>                     
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="/Admin/html/index.html">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -34,47 +35,29 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="/Admin/html/scan.html">
+                        <span class="icon">
+                            <ion-icon name="camera-outline"></ion-icon>
+                        </span>
+                        <span class="title">Scan</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Admin/html/studentinfo.html">
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
-                        <span class="title">Customers</span>
+                        <span class="title">Student Info</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="/Admin/html/report.html">
                         <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
+                            <ion-icon name="bookmark-outline"></ion-icon>
                         </span>
-                        <span class="title">Messages</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="help-outline"></ion-icon>
-                        </span>
-                        <span class="title">Help</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
-                        <span class="title">Settings</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="lock-closed-outline"></ion-icon>
-                        </span>
-                        <span class="title">Password</span>
+                        <span class="title">Report</span>
                     </a>
                 </li>
 
@@ -112,55 +95,55 @@
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="numbers">1,504</div>
-                        <div class="cardName">Daily Views</div>
+                        <div class="numbers">0</div>
+                        <div class="cardName">All Students</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">80</div>
-                        <div class="cardName">Sales</div>
+                        <div class="numbers">0</div>
+                        <div class="cardName">Finished</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cart-outline"></ion-icon>
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">284</div>
-                        <div class="cardName">Comments</div>
+                        <div class="numbers">0</div>
+                        <div class="cardName">Progess</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="chatbubbles-outline"></ion-icon>
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">$7,842</div>
-                        <div class="cardName">Earning</div>
+                        <div class="numbers">0</div>
+                        <div class="cardName">Disabled</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cash-outline"></ion-icon>
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
             </div>
 
-            <!-- ================ Order Details List ================= -->
+            <!-- ================ student List ================= -->
             <div class="details">
-                <div class="recentOrders">
+                <div class="recentStudents">
                     <div class="cardHeader">
-                        <h2>Recent Orders</h2>
-                        <a href="#" class="btn">View All</a>
+                        <h2>Recent Students</h2>
+                        <a href="/Admin/html/studentinfo.html" class="btn">View All</a>
                     </div>
 
                     <table>
@@ -236,7 +219,7 @@
                 <!-- ================= New Customers ================ -->
                 <div class="recentCustomers">
                     <div class="cardHeader">
-                        <h2>Recent Customers</h2>
+                        <h2>Recent Students</h2>
                     </div>
 
                     <table>
@@ -318,7 +301,7 @@
     </div>
 
     <!-- =========== Scripts =========  -->
-    <script src="/d/Project/js/main.js"></script>
+    <script src="/js/main.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
