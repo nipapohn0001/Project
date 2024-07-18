@@ -109,42 +109,49 @@
     <script>
         async function scanFace() {
             const videoElement = document.createElement('video');
-            videoElement.width = window.innerWidth; // ให้กว้างเท่ากับความกว้างของหน้าต่างเว็บ
-            videoElement.height = window.innerHeight; // ให้สูงเท่ากับความสูงของหน้าต่างเว็บ
+            videoElement.width = window.innerWidth;
+            videoElement.height = window.innerHeight;
             videoElement.autoplay = true;
-            videoElement.style.position = 'fixed'; // ตั้งค่าให้วิดีโออยู่ในตำแหน่งที่แน่นอน
-            videoElement.style.left = '50%'; // ย้ายไปที่ตรงกลาง
-            videoElement.style.top = '50%'; // ย้ายไปที่ตรงกลาง
-            videoElement.style.transform = 'translate(-50%, -50%)'; // ปรับให้วิดีโออยู่ที่ตรงกลางแนวนอนและแนวตั้ง
+            videoElement.style.position = 'fixed';
+            videoElement.style.left = '50%';
+            videoElement.style.top = '50%';
+            videoElement.style.transform = 'translate(-50%, -50%)';
 
-            // Add video element to the body
+            const closeButton = document.createElement('button');
+            closeButton.innerText = 'Close';
+            closeButton.style.position = 'fixed';
+            closeButton.style.top = '10px';
+            closeButton.style.right = '10px';
+            closeButton.style.zIndex = '1000';
+            closeButton.style.padding = '10px 20px';
+            closeButton.style.fontSize = '16px';
+            closeButton.style.cursor = 'pointer';
+
+            closeButton.onclick = () => {
+                videoElement.srcObject.getTracks().forEach(track => track.stop());
+                document.body.removeChild(videoElement);
+                document.body.removeChild(closeButton);
+            };
+
             document.body.appendChild(videoElement);
+            document.body.appendChild(closeButton);
 
-            // Start the video stream
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             videoElement.srcObject = stream;
 
-            // Load models
             await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
             await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
             await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
 
-            // Detect faces
             const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors();
 
             if (detections.length > 0) {
-                // Process your logic here when a face is detected
                 alert('Face Detected!');
                 console.log(detections);
             } else {
                 alert('No face detected.');
             }
-
-            // Stop video stream and remove video element
-            videoElement.srcObject.getTracks().forEach(track => track.stop());
-            document.body.removeChild(videoElement);
         }
-
     </script>
 </body>
 
