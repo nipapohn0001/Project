@@ -90,6 +90,12 @@
                 </div>
             </div>
 
+            <div id="student-info-box" style="display:none; position:fixed; top:50px; left:10px; background-color:#fff; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+                <h3>Student Info</h3>
+                <p id="student-id"></p>
+                <p id="student-name"></p>
+                <p id="student-department"></p>
+            </div>
         </div>
     </div>
 
@@ -131,6 +137,7 @@
                 videoElement.srcObject.getTracks().forEach(track => track.stop());
                 document.body.removeChild(videoElement);
                 document.body.removeChild(closeButton);
+                document.getElementById('student-info-box').style.display = 'none';
             };
 
             document.body.appendChild(videoElement);
@@ -146,10 +153,37 @@
             const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors();
 
             if (detections.length > 0) {
-                alert('Face Detected!');
-                console.log(detections);
+                const bestMatch = await getStudentInfo(detections[0].descriptor);
+                if (bestMatch) {
+                    document.getElementById('student-info-box').style.display = 'block';
+                    document.getElementById('student-id').innerText = `ID: ${bestMatch.id}`;
+                    document.getElementById('student-name').innerText = `Name: ${bestMatch.name}`;
+                    document.getElementById('student-department').innerText = `Department: ${bestMatch.department}`;
+                } else {
+                    document.getElementById('student-info-box').style.display = 'block';
+                    document.getElementById('student-id').innerText = `No data found`;
+                    document.getElementById('student-name').innerText = ``;
+                    document.getElementById('student-department').innerText = ``;
+                }
             } else {
                 alert('No face detected.');
+            }
+        }
+
+        async function getStudentInfo(descriptor) {
+            const response = await fetch('/path/to/your/mongodb/api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ descriptor })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            } else {
+                return null;
             }
         }
     </script>
