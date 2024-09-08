@@ -7,7 +7,7 @@ const PORT = 3000;
 app.use(bodyParser.json());
 
 // เชื่อมต่อกับ MongoDB
-MongoClient.connect('mongodb://localhost:27017', { useUnifiedTopology: true }, (err, client) => {
+MongoClient.connect('mongodb://localhost:27017', (err, client) => {
   if (err) return console.error(err);
   console.log('Connected to Database');
   const db = client.db('faceRecognition'); // ชื่อฐานข้อมูล
@@ -60,6 +60,7 @@ MongoClient.connect('mongodb://localhost:27017', { useUnifiedTopology: true }, (
   });
 });
 
+// API สำหรับเพิ่มนักเรียน
 app.post('/addStudent', async (req, res) => {
   const { studentId, name, department, faceDescriptor, image } = req.body;
 
@@ -79,4 +80,3 @@ app.post('/addStudent', async (req, res) => {
     res.status(500).send('Failed to add student');
   }
 });
-
