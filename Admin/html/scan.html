@@ -90,7 +90,19 @@
                 </div>
             </div>
 
-            <div id="student-info-box" style="display:none; position:fixed; top:50px; left:10px; background-color:#fff; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+            <!-- =============== Scan and Add Face ================ -->
+            <div class="cardBoxscan">
+                <div class="card" onclick="scanAndAddFace()">
+                    <div>
+                        <div class="scanface">Scan & Add</div>
+                        <div class="cardName">Click to scan and add</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="student-info-box"
+                style="display:none; position:fixed; top:50px; left:10px; background-color:#fff; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
                 <h3>Student Info</h3>
                 <p id="student-id"></p>
                 <p id="student-name"></p>
@@ -100,6 +112,7 @@
     </div>
 
     <!-- =========== Scripts =========  -->
+    <script src="/js/node.js"></script>
     <script src="/js/main.js"></script>
 
     <!-- ====== ionicons ======= -->
@@ -113,6 +126,7 @@
 
     <!-- ====== Custom Scripts ======= -->
     <script>
+
         async function scanFace() {
             const videoElement = document.createElement('video');
             videoElement.width = window.innerWidth;
@@ -122,6 +136,7 @@
             videoElement.style.left = '50%';
             videoElement.style.top = '50%';
             videoElement.style.transform = 'translate(-50%, -50%)';
+            videoElement.style.zIndex = '1000';
 
             const closeButton = document.createElement('button');
             closeButton.innerText = 'Close';
@@ -134,18 +149,20 @@
             closeButton.style.cursor = 'pointer';
 
             closeButton.onclick = () => {
-                videoElement.srcObject.getTracks().forEach(track => track.stop());
+                videoElement.srcObject.getTracks().forEach(track => track.stop()); // หยุดการใช้งานกล้อง
                 document.body.removeChild(videoElement);
                 document.body.removeChild(closeButton);
-                document.getElementById('student-info-box').style.display = 'none';
+                document.getElementById('student-info-box').style.display = 'none'; // ซ่อน student info box
             };
 
             document.body.appendChild(videoElement);
             document.body.appendChild(closeButton);
 
+            // เปิดใช้งานกล้อง
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             videoElement.srcObject = stream;
 
+            // โหลดโมเดล face-api.js
             await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
             await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
             await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
@@ -171,22 +188,148 @@
         }
 
         async function getStudentInfo(descriptor) {
-            const response = await fetch('/path/to/your/mongodb/api', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ descriptor })
-            });
+            try {
+                const response = await fetch('/recognize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ descriptor })
+                });
 
-            if (response.ok) {
-                const data = await response.json();
-                return data;
-            } else {
+                if (response.ok) {
+                    const data = await response.json();
+                    return data; // คืนค่าข้อมูลนักเรียนที่เจอ
+                } else {
+                    return null; // ถ้าไม่พบข้อมูล
+                }
+            } catch (error) {
+                console.error('Error fetching student info:', error);
                 return null;
             }
         }
     </script>
+    <script>
+        async function scanAndAddFace() {
+            const videoElement = document.createElement('video');
+            videoElement.width = window.innerWidth;
+            videoElement.height = window.innerHeight;
+            videoElement.autoplay = true;
+            videoElement.style.position = 'fixed';
+            videoElement.style.left = '50%';
+            videoElement.style.top = '50%';
+            videoElement.style.transform = 'translate(-50%, -50%)';
+            videoElement.style.zIndex = '1000';
+
+            const closeButton = document.createElement('button');
+            closeButton.innerText = 'Close';
+            closeButton.style.position = 'fixed';
+            closeButton.style.top = '10px';
+            closeButton.style.right = '10px';
+            closeButton.style.zIndex = '1000';
+            closeButton.style.padding = '10px 20px';
+            closeButton.style.fontSize = '16px';
+            closeButton.style.cursor = 'pointer';
+
+            closeButton.onclick = () => {
+                videoElement.srcObject.getTracks().forEach(track => track.stop()); // หยุดการใช้งานกล้อง
+                document.body.removeChild(videoElement);
+                document.body.removeChild(closeButton);
+                document.getElementById('student-info-box').style.display = 'none'; // ซ่อน student info box
+            };
+
+            document.body.appendChild(videoElement);
+            document.body.appendChild(closeButton);
+
+            // เปิดใช้งานกล้อง
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = stream;
+
+            // โหลดโมเดล face-api.js
+            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+            await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+
+            // สร้างปุ่มสำหรับถ่ายรูป
+            const captureButton = document.createElement('button');
+            captureButton.innerText = 'Capture';
+            captureButton.style.position = 'fixed';
+            captureButton.style.bottom = '10px';
+            captureButton.style.left = '10px';
+            captureButton.style.zIndex = '1000';
+            captureButton.style.padding = '10px 20px';
+            captureButton.style.fontSize = '16px';
+            captureButton.style.cursor = 'pointer';
+
+            captureButton.onclick = async () => {
+                const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors();
+
+                if (detections.length > 0) {
+                    const descriptor = detections[0].descriptor;
+
+                    // ถ่ายรูปและเก็บเป็น base64
+                    const canvas = faceapi.createCanvasFromMedia(videoElement);
+                    document.body.appendChild(canvas);
+                    const imageDataUrl = canvas.toDataURL();
+
+                    // แสดงฟอร์มสำหรับกรอกข้อมูล
+                    const form = document.createElement('form');
+                    form.innerHTML = `
+                        <h3>Add Student Info</h3>
+                        <label for="student-id">Student ID:</label><br>
+                        <input type="text" id="student-id" name="student-id" required><br><br>
+                        <label for="student-name">Name:</label><br>
+                        <input type="text" id="student-name" name="student-name" required><br><br>
+                        <label for="student-department">Department:</label><br>
+                        <input type="text" id="student-department" name="student-department" required><br><br>
+                        <input type="hidden" id="face-descriptor" name="face-descriptor" value='${JSON.stringify(Array.from(descriptor))}'>
+                        <input type="hidden" id="image" name="image" value='${imageDataUrl}'>
+                        <input type="submit" value="Add Student">
+                    `;
+
+                    document.body.appendChild(form);
+
+                    form.onsubmit = async (event) => {
+                        event.preventDefault();
+
+                        const formData = new FormData(form);
+                        const data = {
+                            studentId: formData.get('student-id'),
+                            name: formData.get('student-name'),
+                            department: formData.get('student-department'),
+                            faceDescriptor: JSON.parse(formData.get('face-descriptor')),
+                            image: formData.get('image')
+                        };
+
+                        // ส่งข้อมูลไปยังเซิร์ฟเวอร์
+                        try {
+                            const response = await fetch('/addStudent', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            });
+
+                            if (response.ok) {
+                                alert('Student added successfully!');
+                            } else {
+                                alert('Failed to add student.');
+                            }
+                        } catch (error) {
+                            console.error('Error adding student:', error);
+                            alert('Failed to add student.');
+                        }
+                    };
+                } else {
+                    alert('No face detected.');
+                }
+            };
+
+            document.body.appendChild(captureButton);
+        }
+    </script>
+
 </body>
 
 </html>
