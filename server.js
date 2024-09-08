@@ -1,48 +1,67 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient;
+const { MongoClient } = require('mongodb');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/faceRecognition';
 
 app.use(bodyParser.json());
 
-// เชื่อมต่อกับ MongoDB
-MongoClient.connect('mongodb://localhost:27017', (err, client) => {
-  if (err) return console.error(err);
-  console.log('Connected to Database');
-  const db = client.db('faceRecognition'); // ชื่อฐานข้อมูล
-  const studentsCollection = db.collection('students'); // ชื่อ collection
+let db;
+let studentsCollection;
 
-  // ฟังก์ชันคำนวณ Euclidean Distance
-  function euclideanDistance(desc1, desc2) {
-    let sum = 0;
-    for (let i = 0; i < desc1.length; i++) {
-      const diff = desc1[i] - desc2[i];
-      sum += diff * diff;
-    }
-    return Math.sqrt(sum);
+async function connectToDatabase() {
+  try {
+    const client = await MongoClient.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to Database');
+    db = client.db();
+    studentsCollection = db.collection('students');
+
+    // Graceful shutdown
+    process.on('SIGINT', async () => {
+      try {
+        await client.close();
+        console.log('MongoDB connection closed.');
+        process.exit(0);
+      } catch (err) {
+        console.error('Error closing MongoDB connection:', err);
+        process.exit(1);
+      }
+    });
+
+  } catch (err) {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1);
   }
+}
 
-  // API สำหรับตรวจสอบใบหน้า
-  app.post('/recognize', async (req, res) => {
-    const { descriptor } = req.body; // faceDescriptor ที่ส่งมาจาก client
+// ฟังก์ชันคำนวณ Euclidean Distance
+function euclideanDistance(desc1, desc2) {
+  return Math.sqrt(
+    desc1.reduce((sum, val, i) => sum + Math.pow(val - desc2[i], 2), 0)
+  );
+}
 
-    // ดึงข้อมูลนักเรียนทั้งหมดจาก MongoDB
+// API สำหรับตรวจสอบใบหน้า
+app.post('/recognize', async (req, res) => {
+  const { descriptor } = req.body;
+
+  try {
     const students = await studentsCollection.find().toArray();
-
     let bestMatch = null;
-    let minDistance = 0.6; // ค่า threshold ระยะห่างที่ใช้ในการบอกว่าเป็นบุคคลเดียวกัน
+    let minDistance = 0.6;
 
-    // คำนวณระยะทางระหว่าง faceDescriptor ที่สแกนกับนักเรียนในฐานข้อมูล
     students.forEach(student => {
-      const distance = euclideanDistance(descriptor, student.faceDescriptor); // ใช้ฟังก์ชันที่ประกาศไว้
+      const distance = euclideanDistance(descriptor, student.faceDescriptor);
       if (distance < minDistance) {
         bestMatch = student;
         minDistance = distance;
       }
     });
 
-    // ส่งผลลัพธ์กลับไปที่ client
     if (bestMatch) {
       res.status(200).json({
         id: bestMatch.studentId,
@@ -52,12 +71,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
     } else {
       res.status(404).json({ message: 'No match found' });
     }
-  });
-
-  // เปิดเซิร์ฟเวอร์
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  } catch (error) {
+    console.error('Error during face recognition:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 // API สำหรับเพิ่มนักเรียน
@@ -65,18 +82,29 @@ app.post('/addStudent', async (req, res) => {
   const { studentId, name, department, faceDescriptor, image } = req.body;
 
   try {
-    const student = {
+    const result = await studentsCollection.insertOne({
       studentId,
       name,
       department,
       faceDescriptor,
       image
-    };
-
-    await studentsCollection.insertOne(student);
-    res.status(201).send('Student added successfully');
+    });
+    res.status(201).json({ message: 'Student added successfully', id: result.insertedId });
   } catch (error) {
     console.error('Error adding student:', error);
-    res.status(500).send('Failed to add student');
+    res.status(500).json({ message: 'Failed to add student' });
   }
 });
+
+// เริ่มต้นแอพพลิเคชัน
+async function startApp() {
+  await connectToDatabase();
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+startApp().catch(console.error);
+
+
+
