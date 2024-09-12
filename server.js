@@ -82,6 +82,14 @@ app.post('/addStudent', async (req, res) => {
   const { studentId, name, department, faceDescriptor, image } = req.body;
 
   try {
+    // ตรวจสอบว่าข้อมูลนักศึกษาคนนี้มีอยู่ในฐานข้อมูลแล้วหรือไม่
+    const existingStudent = await studentsCollection.findOne({ studentId });
+    if (existingStudent) {
+      res.status(409).json({ message: 'Student already exists' });
+      return;
+    }
+
+    // เพิ่มข้อมูลนักศึกษาใหม่ลงในฐานข้อมูล
     const result = await studentsCollection.insertOne({
       studentId,
       name,
@@ -95,7 +103,6 @@ app.post('/addStudent', async (req, res) => {
     res.status(500).json({ message: 'Failed to add student' });
   }
 });
-
 // เริ่มต้นแอพพลิเคชัน
 async function startApp() {
   await connectToDatabase();
@@ -105,6 +112,36 @@ async function startApp() {
 }
 
 startApp().catch(console.error);
+
+function scanAndAddFace() {
+            // ส่งข้อมูลนักศึกษาไปยัง API /addStudent ที่อยู่ใน server.js
+            fetch('/addStudent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    studentId: '123456', // ใส่ข้อมูลจริงของนักศึกษา
+                    name: 'John Doe',
+                    department: 'Computer Science',
+                    faceDescriptor: [0.1, 0.2, 0.3,], // ข้อมูลจำลองสำหรับทดสอบ
+                    image: '/path/to/student-image.jpg' // ใส่เส้นทางภาพถ่ายจริง
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to add student');
+                    }
+                })
+                .then(data => {
+                    console.log(data.message);
+                })
+                .catch(error => {
+                    console.error('Error adding student:', error);
+                });
+        }
 
 
 

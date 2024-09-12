@@ -212,86 +212,117 @@
     <script>
         async function scanAndAddFace() {
             const videoElement = document.createElement('video');
-            videoElement.width = window.innerWidth;
-            videoElement.height = window.innerHeight;
+            videoElement.width = 640;
+            videoElement.height = 480;
             videoElement.autoplay = true;
             videoElement.style.position = 'fixed';
             videoElement.style.left = '50%';
             videoElement.style.top = '50%';
             videoElement.style.transform = 'translate(-50%, -50%)';
             videoElement.style.zIndex = '1000';
-
-            const closeButton = document.createElement('button');
-            closeButton.innerText = 'Close';
-            closeButton.style.position = 'fixed';
-            closeButton.style.top = '10px';
-            closeButton.style.right = '10px';
-            closeButton.style.zIndex = '1000';
-            closeButton.style.padding = '10px 20px';
-            closeButton.style.fontSize = '16px';
-            closeButton.style.cursor = 'pointer';
-
-            closeButton.onclick = () => {
-                videoElement.srcObject.getTracks().forEach(track => track.stop()); // หยุดการใช้งานกล้อง
-                document.body.removeChild(videoElement);
-                document.body.removeChild(closeButton);
-                document.getElementById('student-info-box').style.display = 'none'; // ซ่อน student info box
-            };
-
-            document.body.appendChild(videoElement);
-            document.body.appendChild(closeButton);
-
-            // เปิดใช้งานกล้อง
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            videoElement.srcObject = stream;
-
-            // โหลดโมเดล face-api.js
-            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-            await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
-
-            // สร้างปุ่มสำหรับถ่ายรูป
+    
+            const controlsContainer = document.createElement('div');
+            controlsContainer.style.position = 'fixed';
+            controlsContainer.style.bottom = '20px';
+            controlsContainer.style.left = '50%';
+            controlsContainer.style.transform = 'translateX(-50%)';
+            controlsContainer.style.zIndex = '1001';
+            controlsContainer.style.display = 'flex';
+            controlsContainer.style.gap = '10px';
+    
             const captureButton = document.createElement('button');
             captureButton.innerText = 'Capture';
-            captureButton.style.position = 'fixed';
-            captureButton.style.bottom = '10px';
-            captureButton.style.left = '10px';
-            captureButton.style.zIndex = '1000';
             captureButton.style.padding = '10px 20px';
             captureButton.style.fontSize = '16px';
             captureButton.style.cursor = 'pointer';
-
+            captureButton.style.backgroundColor = '#4CAF50';
+            captureButton.style.color = 'white';
+            captureButton.style.border = 'none';
+            captureButton.style.borderRadius = '5px';
+    
+            const closeButton = document.createElement('button');
+            closeButton.innerText = 'Close';
+            closeButton.style.padding = '10px 20px';
+            closeButton.style.fontSize = '16px';
+            closeButton.style.cursor = 'pointer';
+            closeButton.style.backgroundColor = '#f44336';
+            closeButton.style.color = 'white';
+            closeButton.style.border = 'none';
+            closeButton.style.borderRadius = '5px';
+    
+            controlsContainer.appendChild(captureButton);
+            controlsContainer.appendChild(closeButton);
+    
+            document.body.appendChild(videoElement);
+            document.body.appendChild(controlsContainer);
+    
+            let stream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing the camera:', error);
+                alert('Unable to access the camera. Please make sure you have given permission and try again.');
+                document.body.removeChild(videoElement);
+                document.body.removeChild(controlsContainer);
+                return;
+            }
+    
+            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+            await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+    
+            function cleanup() {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+                document.body.removeChild(videoElement);
+                document.body.removeChild(controlsContainer);
+            }
+    
+            closeButton.onclick = cleanup;
+    
             captureButton.onclick = async () => {
                 const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors();
-
+    
                 if (detections.length > 0) {
                     const descriptor = detections[0].descriptor;
-
-                    // ถ่ายรูปและเก็บเป็น base64
+    
                     const canvas = faceapi.createCanvasFromMedia(videoElement);
-                    document.body.appendChild(canvas);
-                    const imageDataUrl = canvas.toDataURL();
-
-                    // แสดงฟอร์มสำหรับกรอกข้อมูล
+                    canvas.width = videoElement.width;
+                    canvas.height = videoElement.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                    const imageDataUrl = canvas.toDataURL('image/jpeg');
+    
                     const form = document.createElement('form');
+                    form.style.position = 'fixed';
+                    form.style.top = '50%';
+                    form.style.left = '50%';
+                    form.style.transform = 'translate(-50%, -50%)';
+                    form.style.backgroundColor = 'white';
+                    form.style.padding = '20px';
+                    form.style.borderRadius = '10px';
+                    form.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                    form.style.zIndex = '1002';
                     form.innerHTML = `
-                        <h3>Add Student Info</h3>
+                        <h3 style="margin-bottom: 15px;">Add Student Info</h3>
                         <label for="student-id">Student ID:</label><br>
-                        <input type="text" id="student-id" name="student-id" required><br><br>
+                        <input type="text" id="student-id" name="student-id" required style="margin-bottom: 10px; width: 100%; padding: 5px;"><br>
                         <label for="student-name">Name:</label><br>
-                        <input type="text" id="student-name" name="student-name" required><br><br>
+                        <input type="text" id="student-name" name="student-name" required style="margin-bottom: 10px; width: 100%; padding: 5px;"><br>
                         <label for="student-department">Department:</label><br>
-                        <input type="text" id="student-department" name="student-department" required><br><br>
+                        <input type="text" id="student-department" name="student-department" required style="margin-bottom: 10px; width: 100%; padding: 5px;"><br>
                         <input type="hidden" id="face-descriptor" name="face-descriptor" value='${JSON.stringify(Array.from(descriptor))}'>
                         <input type="hidden" id="image" name="image" value='${imageDataUrl}'>
-                        <input type="submit" value="Add Student">
+                        <input type="submit" value="Add Student" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
                     `;
-
+    
                     document.body.appendChild(form);
-
+    
                     form.onsubmit = async (event) => {
                         event.preventDefault();
-
+    
                         const formData = new FormData(form);
                         const data = {
                             studentId: formData.get('student-id'),
@@ -300,8 +331,7 @@
                             faceDescriptor: JSON.parse(formData.get('face-descriptor')),
                             image: formData.get('image')
                         };
-
-                        // ส่งข้อมูลไปยังเซิร์ฟเวอร์
+    
                         try {
                             const response = await fetch('/addStudent', {
                                 method: 'POST',
@@ -310,7 +340,7 @@
                                 },
                                 body: JSON.stringify(data)
                             });
-
+    
                             if (response.ok) {
                                 alert('Student added successfully!');
                             } else {
@@ -320,15 +350,52 @@
                             console.error('Error adding student:', error);
                             alert('Failed to add student.');
                         }
+    
+                        document.body.removeChild(form);
+                        cleanup();
                     };
                 } else {
-                    alert('No face detected.');
+                    alert('No face detected. Please try again.');
                 }
             };
-
-            document.body.appendChild(captureButton);
         }
     </script>
+    
+
+
+
+
+    <!-- <script>
+        function scanAndAddFace() {
+            // ส่งข้อมูลนักศึกษาไปยัง API /addStudent ที่อยู่ใน server.js
+            fetch('/addStudent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    studentId: '123456', // ใส่ข้อมูลจริงของนักศึกษา
+                    name: 'John Doe',
+                    department: 'Computer Science',
+                    faceDescriptor: [0.1, 0.2, 0.3,], // ข้อมูลจำลองสำหรับทดสอบ
+                    image: '/path/to/student-image.jpg' // ใส่เส้นทางภาพถ่ายจริง
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to add student');
+                    }
+                })
+                .then(data => {
+                    console.log(data.message);
+                })
+                .catch(error => {
+                    console.error('Error adding student:', error);
+                });
+        }
+    </script> -->
 
 </body>
 
