@@ -113,7 +113,7 @@
 
     <!-- =========== Scripts =========  -->
     <script src="/js/server.js"></script>
-    <script src="/js/main.js"></script>
+    <script src="/Admin/html/react.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
@@ -268,9 +268,16 @@
                 return;
             }
     
-            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-            await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+                await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+                await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+                console.log('Face-api models loaded successfully');
+            } catch (error) {
+                console.error('Error loading face-api models:', error);
+                alert('Failed to load face detection models.');
+                return;
+            }
     
             function cleanup() {
                 if (stream) {
@@ -283,7 +290,10 @@
             closeButton.onclick = cleanup;
     
             captureButton.onclick = async () => {
+                console.log('Capture button clicked');
+    
                 const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors();
+                console.log('Detections:', detections);
     
                 if (detections.length > 0) {
                     const descriptor = detections[0].descriptor;
@@ -361,6 +371,7 @@
         }
     </script>
     
+
 
 
 
