@@ -3,6 +3,7 @@ from datetime import datetime
 from pymongo.errors import DuplicateKeyError
 
 class AttendanceDB:
+    
     def __init__(self, connection_string="mongodb://localhost:27017/"):
         # เชื่อมต่อกับ MongoDB
         self.client = MongoClient(connection_string)
@@ -15,6 +16,15 @@ class AttendanceDB:
         
         # สร้าง indexes
         self.students.create_index([("student_id", ASCENDING)], unique=True)
+
+    def get_known_encodings(self):
+        """ดึงข้อมูล face_encodings ของนักศึกษาทั้งหมดจากฐานข้อมูล"""
+        encodings = []
+        for student in self.students.find({}, {"face_encoding": 1, "_id": 0}):
+            if "face_encoding" in student:
+                encodings.append(student["face_encoding"])
+        return encodings
+
 
     def add_student(self, student_id, first_name, last_name, faculty, major, force_update=False):
         """
