@@ -2,6 +2,8 @@ from pymongo import MongoClient, ASCENDING
 from datetime import datetime
 from pymongo.errors import DuplicateKeyError
 
+
+
 class AttendanceDB:
     
     def __init__(self, connection_string="mongodb://localhost:27017/"):
@@ -142,3 +144,4 @@ if __name__ == "__main__":
             
     except Exception as e:
         print(f"เกิดข้อผิดพลาด: {str(e)}")
+

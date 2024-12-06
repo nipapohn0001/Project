@@ -99,6 +99,7 @@ class AttendanceUI:
                     (name_x, text_start_y),
                     cv2.FONT_HERSHEY_DUPLEX, 1.2, (0, 0, 0), 2)
 
+            
             # ID
             id_text = f"ID: {student_id}"
             id_size = cv2.getTextSize(id_text, cv2.FONT_HERSHEY_SIMPLEX, 0.8, 1)[0]
